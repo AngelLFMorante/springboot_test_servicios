@@ -4,9 +4,11 @@ import org.afernandez.test.springboot.app.models.Banco;
 import org.afernandez.test.springboot.app.models.Cuenta;
 import org.afernandez.test.springboot.app.repositories.IBancoRepository;
 import org.afernandez.test.springboot.app.repositories.ICuentaRepository;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Service //permite definir en el contenedor y nos permite luego llamarle con el autowired
 public class CuentaServiceImpl implements ICuentaService{
 	private ICuentaRepository cuentaRepository;
 	private IBancoRepository bancoRepository;

@@ -12,7 +12,11 @@ import org.afernandez.test.springboot.app.services.CuentaServiceImpl;
 import org.afernandez.test.springboot.app.services.ICuentaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 
@@ -20,16 +24,21 @@ import java.math.BigDecimal;
 @SpringBootTest //ya viene con @ExtendWitch
 class SpringbootTestApplicationTests {
 
+	@MockBean //Esta forma es de Spring y @Mock es de mockito. es lo mismo.
 	ICuentaRepository cuentaRepository;
+	@MockBean
 	IBancoRepository bancoRepository;
 
+	//@InjectMocks //con inyectMock necesitamos la implementacion y no la interface
+			//como hemos anotado con el bean @Service ahora quitamos injectMockde mockito y ponemos autowired de spring
+	@Autowired //con spring nos permite tener la interface y no poner el Impl
 	ICuentaService service;
 
 	@BeforeEach
 	void setUp(){
-		cuentaRepository = mock(ICuentaRepository.class);
-		bancoRepository = mock(IBancoRepository.class);
-		service = new CuentaServiceImpl(cuentaRepository, bancoRepository);
+//		cuentaRepository = mock(ICuentaRepository.class);
+//		bancoRepository = mock(IBancoRepository.class);
+//		service = new CuentaServiceImpl(cuentaRepository, bancoRepository);
 	}
 
 	@Test
@@ -59,12 +68,16 @@ class SpringbootTestApplicationTests {
 		verify(cuentaRepository, times(3)).findById(1L);
 		verify(cuentaRepository, times(3)).findById(2L);
 
+
 		verify(cuentaRepository, times(2)).update(any(Cuenta.class));
 
 		//2 por que hacemos otra llamada a revisarTotalTransferencias
 		verify(bancoRepository, times(2)).findById(1L);
 		//el times por defecto es 1
 		verify(bancoRepository).update(any(Banco.class));
+
+		verify(cuentaRepository, times(6)).findById(anyLong());
+		verify(cuentaRepository, never()).findAll();
 
 	}
 
@@ -106,7 +119,23 @@ class SpringbootTestApplicationTests {
 
 		verify(bancoRepository, never()).update(any(Banco.class));
 
+		verify(cuentaRepository, times(5)).findById(anyLong());
+		verify(cuentaRepository, never()).findAll();
+
 	}
 
+	@Test
+	void contextLoads3() {
+		when(cuentaRepository.findById(1L)).thenReturn(Datos.crearCuenta001());
+		//dos cuentas atraves del services y mirar que esas dos instancias son iguales
+		Cuenta cuenta1 = service.findById(1L);
+		Cuenta cuenta2 = service.findById(1L);
 
+		assertSame(cuenta1, cuenta2);
+		assertTrue(cuenta1 == cuenta2);
+		assertEquals("Ángel", cuenta1.getPersona());
+		assertEquals("Ángel", cuenta2.getPersona());
+
+		verify(cuentaRepository, times(2)).findById(1L);
+	}
 }
