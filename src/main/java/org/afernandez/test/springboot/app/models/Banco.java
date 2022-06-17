@@ -1,10 +1,22 @@
 package org.afernandez.test.springboot.app.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "bancos")
 public class Banco {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private String nombre;
+
+	@Column(name = "total_transferencias")
 	private int totalTransferencias;
 
+	//Cuando hibernate y JPA, siempre es necesario crear un constructor vacio
+	//para todas las clases entities mapeadas a tablas para que pueda crear y manejar el contexto de persistencia
 	public Banco() {
 	}
 

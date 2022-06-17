@@ -2,11 +2,19 @@ package org.afernandez.test.springboot.app.models;
 
 import org.afernandez.test.springboot.app.exceptions.DineroInsuficienteException;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+//persistencia de hibernate
+@Entity
+@Table(name = "cuentas")//nombre de la tabla que va a ser mapeada
 public class Cuenta {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private String persona;
 	private BigDecimal saldo;
 

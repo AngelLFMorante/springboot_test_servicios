@@ -69,12 +69,12 @@ class SpringbootTestApplicationTests {
 		verify(cuentaRepository, times(3)).findById(2L);
 
 
-		verify(cuentaRepository, times(2)).update(any(Cuenta.class));
+		verify(cuentaRepository, times(2)).save(any(Cuenta.class));
 
 		//2 por que hacemos otra llamada a revisarTotalTransferencias
 		verify(bancoRepository, times(2)).findById(1L);
 		//el times por defecto es 1
-		verify(bancoRepository).update(any(Banco.class));
+		verify(bancoRepository).save(any(Banco.class));
 
 		verify(cuentaRepository, times(6)).findById(anyLong());
 		verify(cuentaRepository, never()).findAll();
@@ -112,12 +112,12 @@ class SpringbootTestApplicationTests {
 		verify(cuentaRepository, times(2)).findById(2L);
 
 		//al realizar uina excepcion no se va a realizar luego las siguientes acciones con lo que update no se realizaria.
-		verify(cuentaRepository, never()).update(any(Cuenta.class));
+		verify(cuentaRepository, never()).save(any(Cuenta.class));
 
 
 		verify(bancoRepository, times(1)).findById(1L);
 
-		verify(bancoRepository, never()).update(any(Banco.class));
+		verify(bancoRepository, never()).save(any(Banco.class));
 
 		verify(cuentaRepository, times(5)).findById(anyLong());
 		verify(cuentaRepository, never()).findAll();
