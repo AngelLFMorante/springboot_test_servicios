@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 //@Controller Cambiamos a RestController por que vamos a implementar una api rest y no podemos con controller
 @RestController //cada metodo devuelve al cliente de forma automatica en un JSON y va en el ResponseBody
@@ -37,9 +38,14 @@ public class CuentaController {
 	}
 
 	@GetMapping("/{id}") // tenerlo entre llaves es el path variable, para poder pasar argumentos en la url
-	@ResponseStatus(OK)
-	public Cuenta detalle(@PathVariable(name = "id") Long id){ //corresponde a la id de la url, si se llama igual se puede omitir.
-		return cuentaService.findById(id);
+	public ResponseEntity<?> detalle(@PathVariable(name = "id") Long id){ //corresponde a la id de la url, si se llama igual se puede omitir.
+		Cuenta cuenta = null;
+		try {
+			cuenta = cuentaService.findById(id);
+		}catch (NoSuchElementException e){
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(cuenta);
 	}
 
 	@PostMapping("/transferir")
@@ -59,5 +65,11 @@ public class CuentaController {
 
 		//tenemos que devolver tipo Json
 		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/{id}")
+	@ResponseStatus(NO_CONTENT)
+	public void eliminar(@PathVariable Long id){
+		cuentaService.deleteById(id);
 	}
 }

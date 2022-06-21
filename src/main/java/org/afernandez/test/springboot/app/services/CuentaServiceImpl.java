@@ -40,6 +40,12 @@ public class CuentaServiceImpl implements ICuentaService{
 	}
 
 	@Override
+	@Transactional
+	public void deleteById(Long id) {
+		cuentaRepository.deleteById(id);
+	}
+
+	@Override
 	@Transactional(readOnly = true) //Son  de consultas
 	public Cuenta findById(Long id) {
 
